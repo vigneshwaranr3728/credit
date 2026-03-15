@@ -1,0 +1,17 @@
+{
+  "name": "credit-risk-analyzer",
+  "version": "1.0.0",
+  "description": "Credit Risk Analysis - Save Middle Class from Loan Defaults",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc && node scripts/build.js",
+    "dev": "npx serve dist -p 3000",
+    "start": "npx serve dist -p 3000"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.0"
+  }
+}

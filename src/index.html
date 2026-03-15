@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CreditGuard — Loan Risk Analyzer</title>
+  <meta name="description" content="Protect middle-class borrowers from loan defaults with AI-powered credit risk analysis." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ─── SIDEBAR ─────────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🛡️</div>
+      <div>
+        <div class="logo-text">CreditGuard</div>
+        <div class="logo-sub">Loan Risk Analyzer</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="#dashboard" class="nav-link">
+        <span class="nav-icon">🏠</span> Dashboard
+      </a>
+      <a href="#analyzer" class="nav-link">
+        <span class="nav-icon">🔍</span> Risk Analyzer
+      </a>
+      <a href="#results" class="nav-link">
+        <span class="nav-icon">📊</span> Results
+      </a>
+
+      <div class="nav-section-label" style="margin-top:12px">Tools</div>
+      <a href="#calculator" class="nav-link">
+        <span class="nav-icon">🧮</span> EMI Calculator
+      </a>
+      <a href="#education" class="nav-link">
+        <span class="nav-icon">📚</span> Learn & Protect
+      </a>
+      <a href="#patterns" class="nav-link">
+        <span class="nav-icon">📈</span> Risk Patterns
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="themeToggle">
+        <span class="toggle-icon">🌙</span>
+        <span>Dark Mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN ─────────────────────────────────────────────────────── -->
+  <div class="main-content" id="mainContent">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div>
+        <div class="topbar-title" id="topbarTitle">Dashboard</div>
+        <div class="topbar-sub">Credit Risk Analysis Platform</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" style="font-size:13px;padding:8px 16px" data-nav="analyzer">
+          + New Analysis
+        </button>
+        <button class="btn-icon" title="Help" data-tooltip="Need help? Check the Learn section">❓</button>
+      </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- DASHBOARD SECTION                                              -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section class="page-section active" id="dashboard">
+
+      <div class="hero animate-in">
+        <div class="hero-title">🛡️ Protect Yourself from Bad Loans</div>
+        <div class="hero-sub">
+          Millions of middle-class families fall into debt traps every year due to unaffordable loans.
+          CreditGuard helps you analyze credit risk <strong>before</strong> you commit — so you can borrow smart.
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-val" data-count="73">0</div>
+            <div class="hero-stat-label">Mn families affected by loan defaults</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-val" data-count="42">0</div>
+            <div class="hero-stat-label">% borrowers had no risk education</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-val" data-count="89">0</div>
+            <div class="hero-stat-label">% defaults were preventable</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid animate-in">
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <div class="stat-card-label">Avg Risk Score</div>
+            <div class="stat-card-icon" style="background:#eff6ff">📊</div>
+          </div>
+          <div class="stat-card-value" id="dashAvgScore">—</div>
+          <div class="stat-card-change">Out of 100 (higher = safer)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <div class="stat-card-label">Default Risk Rate</div>
+            <div class="stat-card-icon" style="background:#fef2f2">⚠️</div>
+          </div>
+          <div class="stat-card-value" id="dashDefaultRate">—</div>
+          <div class="stat-card-change">In sample profiles</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <div class="stat-card-label">Sample Profiles</div>
+            <div class="stat-card-icon" style="background:#f0fdf4">👥</div>
+          </div>
+          <div class="stat-card-value" id="dashProfiles">—</div>
+          <div class="stat-card-change">Click to load any profile</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <div class="stat-card-label">Safe DTI Limit</div>
+            <div class="stat-card-icon" style="background:#fffbeb">🎯</div>
+          </div>
+          <div class="stat-card-value">40%</div>
+          <div class="stat-card-change">Debt-to-Income recommended max</div>
+        </div>
+      </div>
+
+      <!-- Sample Profiles -->
+      <div class="card animate-in" style="margin-bottom:20px">
+        <div class="card-header">
+          <div>
+            <div class="card-title">👥 Sample Borrower Profiles</div>
+            <div class="card-subtitle">Click any profile to load it in the analyzer</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="profiles-grid" id="sampleProfiles"></div>
+        </div>
+      </div>
+
+      <!-- Quick Info -->
+      <div class="two-col animate-in">
+        <div class="card">
+          <div class="card-header"><div class="card-title">⚡ Risk Level Guide</div></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;background:#f0fdf4;border:1px solid #bbf7d0">
+                <span style="font-size:20px">🟢</span>
+                <div><strong style="color:#10b981">LOW RISK (75-100)</strong><br/><span style="font-size:12px;color:#6b7280">Financially sound. EMI is well within limits.</span></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;background:#fffbeb;border:1px solid #fef08a">
+                <span style="font-size:20px">🟡</span>
+                <div><strong style="color:#f59e0b">MEDIUM RISK (55-74)</strong><br/><span style="font-size:12px;color:#6b7280">Caution advised. Consider restructuring.</span></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;background:#fef2f2;border:1px solid #fecaca">
+                <span style="font-size:20px">🔴</span>
+                <div><strong style="color:#ef4444">HIGH RISK (35-54)</strong><br/><span style="font-size:12px;color:#6b7280">Debt trap likely. Counseling recommended.</span></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;background:#f5f3ff;border:1px solid #ddd6fe">
+                <span style="font-size:20px">🔮</span>
+                <div><strong style="color:#7c3aed">CRITICAL (0-34)</strong><br/><span style="font-size:12px;color:#6b7280">Do NOT proceed. Default is very likely.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">📌 Key Metrics Explained</div></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">DTI Ratio (Debt-to-Income)</div>
+              <div style="font-size:12px;color:var(--text2)">Total monthly debt payments ÷ Monthly income. Keep below <strong>40%</strong>. Above 50% is a red flag.</div>
+            </div>
+            <div class="divider" style="margin:4px 0"></div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">Credit Score</div>
+              <div style="font-size:12px;color:var(--text2)">CIBIL score from 300–900. Above <strong>750 = Excellent</strong>, 700+ = Good, below 600 = High risk.</div>
+            </div>
+            <div class="divider" style="margin:4px 0"></div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">EMI Burden</div>
+              <div style="font-size:12px;color:var(--text2)">New EMI as % of income. Experts recommend keeping this below <strong>30%</strong> of monthly income.</div>
+            </div>
+            <div class="divider" style="margin:4px 0"></div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">Savings Buffer</div>
+              <div style="font-size:12px;color:var(--text2)">Money left after expenses. Minimum <strong>10–20%</strong> savings margin is essential for emergencies.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- ANALYZER SECTION                                               -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section class="page-section" id="analyzer">
+
+      <div class="section-header">
+        <div class="section-title">🔍 Risk Analyzer</div>
+        <div class="section-subtitle">Fill in borrower details to get a complete credit risk assessment</div>
+      </div>
+
+      <div class="info-banner animate-in">
+        <div class="info-banner-icon">💡</div>
+        <div class="info-banner-text">
+          <strong>How it works:</strong> Enter the borrower's financial details below. Our engine calculates DTI ratio,
+          EMI affordability, credit score impact, and generates a real-time risk score with personalized recommendations.
+          All calculations happen locally — <strong>no data is sent anywhere</strong>.
+        </div>
+      </div>
+
+      <!-- Live Preview -->
+      <div class="live-preview animate-in">
+        <div class="preview-item">
+          <div class="preview-label">Est. Monthly EMI</div>
+          <div class="preview-value" id="previewEMI">₹0</div>
+        </div>
+        <div class="preview-item">
+          <div class="preview-label">Interest Rate</div>
+          <div class="preview-value" id="previewRate">—</div>
+        </div>
+        <div class="preview-item">
+          <div class="preview-label">DTI Ratio</div>
+          <div class="preview-value" id="previewDTI">—</div>
+        </div>
+      </div>
+
+      <form id="riskForm" novalidate>
+        <div class="card animate-in" style="margin-bottom:20px">
+          <div class="card-header">
+            <div class="card-title">👤 Personal Details</div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="borrowerName" class="form-input" placeholder="e.g. Ramesh Kumar" value="New Borrower" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Age</label>
+                <input type="number" id="age" class="form-input" min="18" max="70" value="30" placeholder="30" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Employment Type</label>
+                <select id="employment" class="form-select">
+                  <option value="salaried">Salaried Employee</option>
+                  <option value="self-employed">Self-Employed</option>
+                  <option value="business">Business Owner</option>
+                  <option value="freelance">Freelancer</option>
+                  <option value="unemployed">Unemployed</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Number of Dependents</label>
+                <input type="number" id="dependents" class="form-input" min="0" max="10" value="1" placeholder="1" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card animate-in" style="margin-bottom:20px">
+          <div class="card-header">
+            <div class="card-title">💰 Income & Expenses</div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">
+                  Monthly Income
+                  <span class="help-icon" data-tooltip="Your total take-home pay after tax per month">?</span>
+                </label>
+                <div class="slider-wrapper">
+                  <div class="slider-display">
+                    <span style="font-size:12px;color:var(--text3)">₹10K → ₹5L</span>
+                    <span class="slider-value" id="incomeDisplay">₹45,000</span>
+                  </div>
+                  <input type="range" id="income" class="range-slider" min="10000" max="500000" step="1000" value="45000" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">
+                  Monthly Expenses
+                  <span class="help-icon" data-tooltip="Rent, groceries, utilities, school fees, etc.">?</span>
+                </label>
+                <div class="slider-wrapper">
+                  <div class="slider-display">
+                    <span style="font-size:12px;color:var(--text3)">₹5K → ₹3L</span>
+                    <span class="slider-value" id="expensesDisplay">₹20,000</span>
+                  </div>
+                  <input type="range" id="expenses" class="range-slider" min="5000" max="300000" step="1000" value="20000" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">
+                  Existing Monthly EMI
+                  <span class="help-icon" data-tooltip="Sum of all existing loan EMIs you currently pay">?</span>
+                </label>
+                <div class="slider-wrapper">
+                  <div class="slider-display">
+                    <span style="font-size:12px;color:var(--text3)">₹0 → ₹1L</span>
+                    <span class="slider-value" id="existingEMIDisplay">₹0</span>
+                  </div>
+                  <input type="range" id="existingEMI" class="range-slider" min="0" max="100000" step="500" value="0" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card animate-in" style="margin-bottom:20px">
+          <div class="card-header">
+            <div class="card-title">🏦 Loan Details</div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Loan Amount Required</label>
+                <div class="slider-wrapper">
+                  <div class="slider-display">
+                    <span style="font-size:12px;color:var(--text3)">₹50K → ₹50L</span>
+                    <span class="slider-value" id="loanAmountDisplay">₹5,00,000</span>
+                  </div>
+                  <input type="range" id="loanAmount" class="range-slider" min="50000" max="5000000" step="10000" value="500000" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">
+                  Loan Tenure
+                  <span class="help-icon" data-tooltip="Number of months to repay the loan">?</span>
+                </label>
+                <div class="slider-wrapper">
+                  <div class="slider-display">
+                    <span style="font-size:12px;color:var(--text3)">6 → 240 months</span>
+                    <span class="slider-value" id="tenureDisplay">60 mo</span>
+                  </div>
+                  <input type="range" id="tenure" class="range-slider" min="6" max="240" step="6" value="60" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Loan Purpose</label>
+                <select id="loanPurpose" class="form-select">
+                  <option value="home">Home / Property</option>
+                  <option value="education">Education</option>
+                  <option value="vehicle">Vehicle</option>
+                  <option value="medical">Medical Emergency</option>
+                  <option value="personal" selected>Personal</option>
+                  <option value="business">Business</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card animate-in" style="margin-bottom:20px">
+          <div class="card-header">
+            <div class="card-title">📋 Credit Profile</div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">
+                  CIBIL / Credit Score
+                  <span class="help-icon" data-tooltip="Your credit score from CIBIL or any bureau. Range: 300–900">?</span>
+                </label>
+                <div class="slider-wrapper">
+                  <div class="slider-display">
+                    <span style="font-size:12px;color:var(--text3)">300 → 900</span>
+                    <span class="slider-value" id="creditScoreDisplay">650</span>
+                  </div>
+                  <input type="range" id="creditScore" class="range-slider" min="300" max="900" step="10" value="650" />
+                  <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px">
+                    <span>Very Poor</span><span>Fair</span><span>Good</span><span>Excellent</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Repayment History</label>
+                <select id="repaymentHistory" class="form-select">
+                  <option value="excellent">Excellent — Never missed</option>
+                  <option value="good" selected>Good — Rarely missed</option>
+                  <option value="fair">Fair — Some delays</option>
+                  <option value="poor">Poor — Frequent defaults</option>
+                  <option value="no-history">No History</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Collateral Available?</label>
+                <label class="toggle-group">
+                  <div class="toggle-switch">
+                    <input type="checkbox" id="hasCollateral" />
+                    <div class="toggle-track"></div>
+                  </div>
+                  <span style="font-size:13px;color:var(--text2)">I have collateral (property, gold, FD, etc.)</span>
+                </label>
+                <div id="collateralSection">
+                  <div class="slider-wrapper" style="margin-top:10px">
+                    <div class="slider-display">
+                      <span class="form-label" style="font-weight:500">Collateral Value</span>
+                      <span class="slider-value" id="collateralValueDisplay">₹0</span>
+                    </div>
+                    <input type="range" id="collateralValue" class="range-slider" min="0" max="10000000" step="50000" value="500000" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button type="submit" class="analyze-btn" style="flex:1;max-width:320px">
+            🔍 Analyze Risk
+          </button>
+          <button type="button" id="resetBtn" class="btn btn-secondary">↺ Reset</button>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- RESULTS SECTION                                                -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section class="page-section" id="results">
+
+      <div class="section-header">
+        <div class="section-title">📊 Risk Analysis Results</div>
+        <div class="section-subtitle">Complete credit risk breakdown and recommendations</div>
+      </div>
+
+      <div id="resultSummary" class="summary-cards animate-in"></div>
+
+      <div class="results-grid animate-in">
+        <!-- Left: Gauge + Recommendation -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="card-header"><div class="card-title">🎯 Risk Score</div></div>
+            <div class="card-body" style="display:flex;flex-direction:column;align-items:center">
+              <canvas id="gaugeCanvas" width="280" height="180" class="gauge-canvas"></canvas>
+              <div style="width:100%;margin-top:8px">
+                <div class="risk-meter">
+                  <div class="risk-meter-marker" id="riskMarker" style="left:50%"></div>
+                </div>
+                <div class="score-labels">
+                  <span>Critical</span><span>High</span><span>Medium</span><span>Low</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">💡 Recommendation</div></div>
+            <div class="card-body" id="recommendation"></div>
+          </div>
+        </div>
+
+        <!-- Right: Charts + Factors -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📊 Key Metrics</div>
+            </div>
+            <div class="card-body">
+              <canvas id="barCanvas" width="500" height="180"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🥧 Income Distribution</div>
+            </div>
+            <div class="card-body">
+              <canvas id="donutCanvas" width="500" height="200"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">⚠️ Risk Factors vs ✅ Positives</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="tab-bar">
+                <button class="tab-btn active" data-tab-group="factors" data-tab="risks">⚠️ Risk Factors</button>
+                <button class="tab-btn" data-tab-group="factors" data-tab="pos">✅ Positive Factors</button>
+              </div>
+              <div class="tab-content active" data-tab-content="factors" data-tab-id="risks">
+                <div id="riskFactors"></div>
+              </div>
+              <div class="tab-content" data-tab-content="factors" data-tab-id="pos">
+                <div id="positiveFactors"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="action-row" style="margin-top:20px">
+        <button class="btn btn-primary" id="printBtn">🖨️ Print Report</button>
+        <button class="btn btn-secondary" id="newAnalysisBtn">+ New Analysis</button>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- EMI CALCULATOR SECTION                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section class="page-section" id="calculator">
+
+      <div class="section-header">
+        <div class="section-title">🧮 Quick EMI Calculator</div>
+        <div class="section-subtitle">Quickly estimate if a loan is affordable before applying</div>
+      </div>
+
+      <div class="card animate-in" style="max-width:700px">
+        <div class="card-header">
+          <div class="card-title">Calculate Loan Affordability</div>
+        </div>
+        <div class="card-body">
+          <div class="calc-grid">
+            <div class="form-group">
+              <label class="form-label">Monthly Income (₹)</label>
+              <input type="number" id="calcIncome" class="form-input" placeholder="e.g. 45000" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Loan Amount (₹)</label>
+              <input type="number" id="calcLoan" class="form-input" placeholder="e.g. 500000" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tenure (Months)</label>
+              <input type="number" id="calcTenure" class="form-input" placeholder="60" value="60" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">&nbsp;</label>
+              <button id="calcBtn" class="btn btn-primary">Calculate</button>
+            </div>
+          </div>
+          <div id="calcResult" class="calc-result"></div>
+        </div>
+      </div>
+
+      <!-- Affordability Tips -->
+      <div class="card animate-in" style="margin-top:20px;max-width:700px">
+        <div class="card-header"><div class="card-title">💡 Affordability Rules of Thumb</div></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <span style="font-size:20px">📐</span>
+              <div>
+                <div style="font-weight:700;margin-bottom:3px">The 30% Rule</div>
+                <div style="font-size:13px;color:var(--text2)">Your new EMI should not exceed 30% of your monthly take-home salary. Above 40% is dangerous territory.</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <span style="font-size:20px">💼</span>
+              <div>
+                <div style="font-weight:700;margin-bottom:3px">Total Debt Limit</div>
+                <div style="font-size:13px;color:var(--text2)">All loans combined (home + car + personal) should stay under 40% of income. This is your maximum safe DTI.</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <span style="font-size:20px">🏦</span>
+              <div>
+                <div style="font-weight:700;margin-bottom:3px">Emergency Fund First</div>
+                <div style="font-size:13px;color:var(--text2)">Always maintain 3–6 months of expenses as an emergency fund before taking any loan. This prevents defaults during crisis.</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <span style="font-size:20px">⏳</span>
+              <div>
+                <div style="font-weight:700;margin-bottom:3px">Longer Tenure ≠ Better</div>
+                <div style="font-size:13px;color:var(--text2)">A 20-year loan on ₹5L at 12% costs you ₹8.4L in interest alone. Shorter tenure saves lakhs despite higher EMI.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- EDUCATION SECTION                                              -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section class="page-section" id="education">
+
+      <div class="section-header">
+        <div class="section-title">📚 Learn & Protect Yourself</div>
+        <div class="section-subtitle">Financial literacy tools to help middle-class families make smarter loan decisions</div>
+      </div>
+
+      <div class="edu-cards animate-in">
+        <div class="edu-card">
+          <div class="edu-card-icon">🎯</div>
+          <div class="edu-card-title">What is a Debt Trap?</div>
+          <div class="edu-card-text">A debt trap occurs when your loan EMIs exceed your ability to repay, forcing you to take more loans to repay existing ones. Signs: EMI > 40% income, using credit cards to pay EMI, missing payments regularly.</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-card-icon">📈</div>
+          <div class="edu-card-title">Credit Score Explained</div>
+          <div class="edu-card-text">Your CIBIL score (300–900) is based on payment history (35%), credit utilization (30%), length of history (15%), credit mix (10%), and new inquiries (10%). Pay on time and keep utilization under 30%.</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-card-icon">🔴</div>
+          <div class="edu-card-title">Warning Signs of Over-Borrowing</div>
+          <div class="edu-card-text">Watch out: EMI > 40% salary, no emergency fund, borrowing to pay EMIs, 3+ active loans, credit score dropping, missing repayments. If you see 3+ signs, stop and seek financial counseling immediately.</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-card-icon">💡</div>
+          <div class="edu-card-title">How to Improve Your Score</div>
+          <div class="edu-card-text">Pay all EMIs on time (biggest impact), reduce credit card outstanding, don't apply for multiple loans at once, maintain a mix of secured and unsecured loans, check your credit report annually for errors.</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-card-icon">🏠</div>
+          <div class="edu-card-title">Good Debt vs Bad Debt</div>
+          <div class="edu-card-text">Good debt creates assets: home loans, education loans, business loans. Bad debt has no return: personal loans for vacations, consumer loans for gadgets. Rule: if the asset doesn't appreciate or earn income, reconsider.</div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-card-icon">🛡️</div>
+          <div class="edu-card-title">Protect Your Family</div>
+          <div class="edu-card-text">Always take loan protection insurance for large loans. Build an emergency fund of 3–6 months expenses. Avoid co-signing loans for others unless you can afford their EMI. Never take personal loans for investing in stock market.</div>
+        </div>
+      </div>
+
+      <div class="card animate-in" style="margin-top:20px">
+        <div class="card-header"><div class="card-title">🆘 What To Do If You're Struggling</div></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+            <div style="padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:18px;margin-bottom:8px">1️⃣</div>
+              <div style="font-weight:700;margin-bottom:4px">Contact Your Bank First</div>
+              <div style="font-size:12px;color:var(--text2)">Banks prefer restructuring over default. Ask for EMI moratorium, tenure extension, or interest rate reduction.</div>
+            </div>
+            <div style="padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:18px;margin-bottom:8px">2️⃣</div>
+              <div style="font-weight:700;margin-bottom:4px">Seek Financial Counseling</div>
+              <div style="font-size:12px;color:var(--text2)">RBI's Credit Counselling Centres offer free advice. NABARD, SIDBI also have credit advisory services.</div>
+            </div>
+            <div style="padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:18px;margin-bottom:8px">3️⃣</div>
+              <div style="font-weight:700;margin-bottom:4px">Debt Consolidation</div>
+              <div style="font-size:12px;color:var(--text2)">Combine multiple high-interest loans into a single lower-interest loan to reduce total EMI burden.</div>
+            </div>
+            <div style="padding:14px;background:var(--surface2);border-radius:10px;border:1px solid var(--border)">
+              <div style="font-size:18px;margin-bottom:8px">4️⃣</div>
+              <div style="font-weight:700;margin-bottom:4px">Budget Aggressively</div>
+              <div style="font-size:12px;color:var(--text2)">Use the 50/30/20 rule: 50% needs, 30% wants, 20% savings + debt repayment. Cut all non-essentials.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- RISK PATTERNS SECTION                                          -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section class="page-section" id="patterns">
+
+      <div class="section-header">
+        <div class="section-title">📈 Risk Patterns & Insights</div>
+        <div class="section-subtitle">Understanding common patterns that lead to loan defaults in India</div>
+      </div>
+
+      <div class="two-col animate-in">
+        <div class="card">
+          <div class="card-header"><div class="card-title">📊 Common Default Triggers</div></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:13px;font-weight:600">Income Loss / Job Loss</span>
+                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">34%</span>
+                </div>
+                <div style="height:6px;background:var(--border);border-radius:3px"><div style="width:34%;height:100%;background:#ef4444;border-radius:3px"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:13px;font-weight:600">Over-Indebtedness (3+ loans)</span>
+                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">28%</span>
+                </div>
+                <div style="height:6px;background:var(--border);border-radius:3px"><div style="width:28%;height:100%;background:#f59e0b;border-radius:3px"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:13px;font-weight:600">Medical Emergency</span>
+                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">19%</span>
+                </div>
+                <div style="height:6px;background:var(--border);border-radius:3px"><div style="width:19%;height:100%;background:#7c3aed;border-radius:3px"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:13px;font-weight:600">Poor Financial Planning</span>
+                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">12%</span>
+                </div>
+                <div style="height:6px;background:var(--border);border-radius:3px"><div style="width:12%;height:100%;background:#3b82f6;border-radius:3px"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:13px;font-weight:600">Business Failure</span>
+                  <span style="font-size:12px;color:var(--text3);font-family:var(--mono)">7%</span>
+                </div>
+                <div style="height:6px;background:var(--border);border-radius:3px"><div style="width:7%;height:100%;background:#10b981;border-radius:3px"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">🔍 High-Risk Borrower Profiles</div></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+            <div style="padding:10px 12px;background:#fef2f2;border-radius:8px;border-left:3px solid #ef4444;font-size:13px">
+              <strong>Freelancer with 3+ loans</strong><br/><span style="color:var(--text2)">Irregular income + high obligations = highest default probability</span>
+            </div>
+            <div style="padding:10px 12px;background:#fef2f2;border-radius:8px;border-left:3px solid #ef4444;font-size:13px">
+              <strong>Credit score below 600</strong><br/><span style="color:var(--text2)">Past defaults strongly predict future defaults. 3x higher risk.</span>
+            </div>
+            <div style="padding:10px 12px;background:#fffbeb;border-radius:8px;border-left:3px solid #f59e0b;font-size:13px">
+              <strong>DTI above 50%</strong><br/><span style="color:var(--text2)">More than half of income going to debt. One setback = default.</span>
+            </div>
+            <div style="padding:10px 12px;background:#fffbeb;border-radius:8px;border-left:3px solid #f59e0b;font-size:13px">
+              <strong>Single income, 4+ dependents</strong><br/><span style="color:var(--text2)">High household expense with no income buffer is dangerous.</span>
+            </div>
+            <div style="padding:10px 12px;background:#f0fdf4;border-radius:8px;border-left:3px solid #10b981;font-size:13px">
+              <strong>Salaried + collateral + good score</strong><br/><span style="color:var(--text2)">Lowest risk profile. Banks offer best rates to this segment.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card animate-in" style="margin-top:20px">
+        <div class="card-header"><div class="card-title">🗓️ When Defaults Peak in India</div></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px">
+            <div style="text-align:center;padding:14px;background:var(--surface2);border-radius:10px">
+              <div style="font-size:22px;margin-bottom:6px">📅</div>
+              <div style="font-weight:700;font-size:14px">Jan–Mar</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">Post-holiday spending hangover. Credit card defaults spike.</div>
+            </div>
+            <div style="text-align:center;padding:14px;background:#fef2f2;border-radius:10px;border:1px solid #fecaca">
+              <div style="font-size:22px;margin-bottom:6px">☀️</div>
+              <div style="font-weight:700;font-size:14px">Apr–Jun</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">School fees pressure. Festival loans from last year due.</div>
+            </div>
+            <div style="text-align:center;padding:14px;background:var(--surface2);border-radius:10px">
+              <div style="font-size:22px;margin-bottom:6px">🌧️</div>
+              <div style="font-weight:700;font-size:14px">Jul–Sep</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">Agricultural stress. Rural loan defaults peak.</div>
+            </div>
+            <div style="text-align:center;padding:14px;background:#fffbeb;border-radius:10px;border:1px solid #fef08a">
+              <div style="font-size:22px;margin-bottom:6px">🪔</div>
+              <div style="font-weight:700;font-size:14px">Oct–Dec</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px">Festival over-spending leads to January defaults.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </div><!-- end main-content -->
+</div><!-- end app-layout -->
+
+<!-- Mobile Menu Button (hidden on desktop) -->
+<button id="mobileMenuBtn" style="display:none;position:fixed;bottom:20px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--accent);color:white;border:none;font-size:22px;box-shadow:var(--shadow-lg);z-index:200" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>
